@@ -77,6 +77,13 @@ class JWTGuard implements Guard
         // Custom edit for legacy support
         $this->jwt->setRequest($this->request)->getToken();
         $payload = $this->jwt->check(true);
+
+        // $this->jwt->check returns either the payload or false
+        // Make sure we have a valid payload before continuing
+        if (! $payload) {
+            return null;
+        }
+
         return $this->user = \App\Models\User::findOrFail($payload['sub']);
     }
 
